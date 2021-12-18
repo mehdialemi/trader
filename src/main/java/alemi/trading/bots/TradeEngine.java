@@ -1,9 +1,10 @@
 package alemi.trading.bots;
 
 
-import alemi.trading.coin.CoinData;
-import alemi.trading.coin.CoinService;
+import alemi.trading.coin.market.MarketService;
+import alemi.trading.coin.market.TickerEventHanlder;
 import alemi.trading.kucoin.OrderService;
+import com.kucoin.sdk.rest.response.TickerResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
@@ -15,10 +16,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
-public class TradeEngine {
+public class TradeEngine implements TickerEventHanlder {
 
 	@Autowired
-	private CoinService coinService;
+	private MarketService marketService;
 
 	@Autowired
 	private OrderService orderService;
@@ -31,7 +32,7 @@ public class TradeEngine {
 	private boolean simulate;
 	private AtomicReference <BigDecimal> atomicBudget = new AtomicReference <>();
 
-	public void setup(TradeBotConfig config) {
+	public void setup(TradeBotConfig config) throws IOException {
 		this.operation = config.getOperation();
 		this.simulate = config.isSimulate();
 		this.atomicBudget.set(config.getBudget());
@@ -42,9 +43,7 @@ public class TradeEngine {
 			sellMap.put(symbol, Pair.of(BigDecimal.ZERO, BigDecimal.ZERO));
 		}
 
-		coinService.listen(event -> {
-			handlePriceChange(event.getSymbol(), event);
-		}, config.getSymbols());
+		marketService.registerTicker(this::onNewTicker, config.getSymbols());
 	}
 
 	public synchronized void buy(String symbol, BigDecimal price, BigDecimal size) throws IOException {
@@ -89,15 +88,9 @@ public class TradeEngine {
 		sellMap.put(symbol, Pair.of(ps.getFirst().add(price), ps.getSecond().add(size)));
 	}
 
-	private void handlePriceChange(String symbol, CoinData coinData) {
-		operation.inform(symbol, coinData);
-		lastPrices.put(symbol, coinData.getChange().getPrice());
-	}
-
 	public BigDecimal getAvgPrice(String symbol) {
 		return avgPrices.get(symbol);
 	}
-
 
 	public BigDecimal getLastPrice(String symbol) {
 		return lastPrices.get(symbol);
@@ -120,4 +113,9 @@ public class TradeEngine {
 		return prof;
 	}
 
+	@Override
+	public void onNewTicker(String symbol, TickerResponse ticker) {
+		operation.inform(symbol, ticker);
+		lastPrices.put(symbol, ticker.getPrice());
+	}
 }

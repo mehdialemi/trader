@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>alemi</groupId>
-    <artifactId>trader</artifactId>
+    <artifactId>alemi.trading</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>

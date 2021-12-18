@@ -1,6 +1,6 @@
 package alemi.trading.realtime;
 
-import alemi.trading.coin.CoinService;
+import alemi.trading.coin.market.MarketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +11,14 @@ import java.util.Collections;
 public class CyclePatternDetector {
 
 	@Autowired
-	private CoinService coinService;
+	private MarketService marketService;
 
 	public void history(String symbol) throws IOException {
-		coinService.getHistory(symbol);
+		marketService.getHistory(symbol);
 	}
 
-	public void realtime(String symbol) {
-		coinService.listen(coinData -> {
+	public void realtime(String symbol) throws IOException {
+		marketService.registerTicker((symbol1, ticker) -> {
 
 		}, Collections.singletonList(symbol));
 	}

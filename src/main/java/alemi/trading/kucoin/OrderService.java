@@ -20,7 +20,7 @@ public class OrderService {
 
 	@PostConstruct
 	public void init() {
-		orderAPI = kucoinConnector.getRestClient().orderAPI();
+		orderAPI = kucoinConnector.getRest().orderAPI();
 	}
 
 	public String buy(String symbol, BigDecimal price, BigDecimal size) throws IOException {

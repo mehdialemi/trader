@@ -1,8 +1,8 @@
 package alemi.trading.bots;
 
-import alemi.trading.coin.CoinData;
+import com.kucoin.sdk.rest.response.TickerResponse;
 
 public interface BotOperation {
 
-	void inform(String subject, CoinData data);
+	void inform(String subject, TickerResponse tickerResponse);
 }

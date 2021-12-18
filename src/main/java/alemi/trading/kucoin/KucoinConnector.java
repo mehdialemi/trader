@@ -4,6 +4,7 @@ import com.kucoin.sdk.KucoinClientBuilder;
 import com.kucoin.sdk.KucoinPublicWSClient;
 import com.kucoin.sdk.KucoinRestClient;
 import com.kucoin.sdk.rest.interfaces.HistoryAPI;
+import com.kucoin.sdk.websocket.listener.KucoinPublicWebsocketListener;
 import okhttp3.*;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,30 +39,34 @@ public class KucoinConnector {
 
 	private OkHttpClient client;
 
-	private KucoinRestClient restClient;
+	private KucoinRestClient rest;
 
-	private KucoinPublicWSClient publicWSClient;
+	private KucoinPublicWSClient stream;
 
 	@PostConstruct
 	public void init() throws IOException {
 		client = new OkHttpClient.Builder().build();
-		restClient = new KucoinClientBuilder()
+		rest = new KucoinClientBuilder()
 				.withBaseUrl(baseUrl)
 				.withApiKey(apiKey, secretKey, passphrase)
 				.buildRestClient();
 
-		publicWSClient = new KucoinClientBuilder()
+		stream = new KucoinClientBuilder()
 				.withBaseUrl(baseUrl)
 				.withApiKey(apiKey, secretKey, passphrase)
 				.buildPublicWSClient();
 	}
 
-	public KucoinRestClient getRestClient() {
-		return restClient;
+	public KucoinRestClient getRest() {
+		return rest;
+	}
+
+	public KucoinPublicWSClient getStream() {
+		return stream;
 	}
 
 	public HistoryAPI getHistoryApi() {
-		return restClient.historyAPI();
+		return rest.historyAPI();
 	}
 
 	public Response get(String path) throws IOException {
@@ -102,7 +107,4 @@ public class KucoinConnector {
 		return builder;
 	}
 
-	public KucoinPublicWSClient getPublicWSClient() {
-		return publicWSClient;
-	}
 }

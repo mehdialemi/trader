@@ -21,7 +21,7 @@ public class AccountService {
 
 	@PostConstruct
 	public void init() throws IOException {
-	    api = kucoinConnector.getRestClient().accountAPI();
+	    api = kucoinConnector.getRest().accountAPI();
 		printAccounts("trade");
 		printAccounts("main");
 	}
