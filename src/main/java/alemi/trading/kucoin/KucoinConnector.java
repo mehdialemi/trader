@@ -4,8 +4,8 @@ import com.kucoin.sdk.KucoinClientBuilder;
 import com.kucoin.sdk.KucoinPublicWSClient;
 import com.kucoin.sdk.KucoinRestClient;
 import com.kucoin.sdk.rest.interfaces.HistoryAPI;
-import com.kucoin.sdk.rest.response.CurrencyResponse;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.Request;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,6 @@ import org.springframework.util.Base64Utils;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.Instant;
-import java.util.List;
 
 @Service
 public class KucoinConnector {

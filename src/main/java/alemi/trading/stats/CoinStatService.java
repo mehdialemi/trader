@@ -1,7 +1,6 @@
 package alemi.trading.stats;
 
 import alemi.trading.coin.market.MarketService;
-import alemi.trading.coin.market.TickerEventHanlder;
 import com.kucoin.sdk.rest.response.TickerResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
