@@ -17,10 +17,5 @@ public class CyclePatternDetector {
 		marketService.getHistory(symbol);
 	}
 
-	public void realtime(String symbol) throws IOException {
-		marketService.registerTicker((symbol1, ticker) -> {
-
-		}, Collections.singletonList(symbol));
-	}
 
 }

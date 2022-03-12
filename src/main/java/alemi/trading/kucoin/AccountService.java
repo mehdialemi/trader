@@ -30,7 +30,7 @@ public class AccountService {
 		List <AccountBalancesResponse> accounts = api.listAccounts("", type);
 		log.info("There are {} accounts for type {}", accounts.size(), type);
 		for (AccountBalancesResponse account : accounts) {
-			log.info("Account: {}", account.toString());
+			log.debug("Account: {}", account.toString());
 		}
 	}
 }

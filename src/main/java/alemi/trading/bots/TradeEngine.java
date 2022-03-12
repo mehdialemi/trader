@@ -43,7 +43,7 @@ public class TradeEngine implements TickerEventHanlder {
 			sellMap.put(symbol, Pair.of(BigDecimal.ZERO, BigDecimal.ZERO));
 		}
 
-		marketService.registerTicker(this::onNewTicker, config.getSymbols());
+		marketService.addHandler(this::onNewTicker);
 	}
 
 	public synchronized void buy(String symbol, BigDecimal price, BigDecimal size) throws IOException {

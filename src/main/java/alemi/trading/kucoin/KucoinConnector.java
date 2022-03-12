@@ -4,7 +4,7 @@ import com.kucoin.sdk.KucoinClientBuilder;
 import com.kucoin.sdk.KucoinPublicWSClient;
 import com.kucoin.sdk.KucoinRestClient;
 import com.kucoin.sdk.rest.interfaces.HistoryAPI;
-import com.kucoin.sdk.websocket.listener.KucoinPublicWebsocketListener;
+import com.kucoin.sdk.rest.response.CurrencyResponse;
 import okhttp3.*;
 import org.apache.commons.codec.digest.HmacUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +14,7 @@ import org.springframework.util.Base64Utils;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class KucoinConnector {
@@ -37,23 +38,17 @@ public class KucoinConnector {
 	@Value("{kucoin.api.version}")
 	private String apiVersion;
 
-	private OkHttpClient client;
-
 	private KucoinRestClient rest;
 
 	private KucoinPublicWSClient stream;
 
 	@PostConstruct
 	public void init() throws IOException {
-		client = new OkHttpClient.Builder().build();
 		rest = new KucoinClientBuilder()
-				.withBaseUrl(baseUrl)
 				.withApiKey(apiKey, secretKey, passphrase)
 				.buildRestClient();
 
 		stream = new KucoinClientBuilder()
-				.withBaseUrl(baseUrl)
-				.withApiKey(apiKey, secretKey, passphrase)
 				.buildPublicWSClient();
 	}
 
@@ -67,21 +62,6 @@ public class KucoinConnector {
 
 	public HistoryAPI getHistoryApi() {
 		return rest.historyAPI();
-	}
-
-	public Response get(String path) throws IOException {
-		Request.Builder builder = build( "GET", apiBasePath + path);
-		Request request = builder.get().build();
-		Response response = client.newCall(request).execute();
-		return response;
-	}
-
-	public Response post(String path, String json) throws IOException {
-		Request.Builder post = build("POST", apiBasePath + path);
-		RequestBody body = RequestBody.create(JSON, json);
-		Request build = post.post(body).build();
-		Response response = client.newCall(build).execute();
-		return response;
 	}
 
 	private Request.Builder build(String method , String path) {
@@ -106,5 +86,4 @@ public class KucoinConnector {
 
 		return builder;
 	}
-
 }
